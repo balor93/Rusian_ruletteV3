@@ -82,7 +82,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void bang() {
-        bangLayout = findViewById(R.id.bangLayout);
         bangLayout.setBackgroundColor(getResources().getColor(R.color.colorBang));
         textBang.setVisibility(View.VISIBLE);
         gameOver=true;
