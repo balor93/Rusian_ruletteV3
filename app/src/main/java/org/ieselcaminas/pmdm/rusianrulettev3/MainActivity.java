@@ -10,12 +10,12 @@ import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
 
-    public static final int NUM_BULLETS =6;
-    private Button[] buttons;
-    private Button bulletBotton;
+
+
     private FrameLayout bangLayout;
     private TextView textBang;
-    private Boolean gameOver;
+    private Barrel barrel;
+
 
 
     @Override
@@ -23,11 +23,21 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        barrel = findViewById(R.id.barrelLayout);
+        barrel.setFireListener(new Barrel.FireListener() {
+            @Override
+            public void fire(boolean bang) {
+                if(bang){
+                    bang();
+                }
+            }
+        });
+
         bangLayout =findViewById(R.id.bangLayout);
         textBang = findViewById(R.id.textViewBang);
 
-        createButtons();
-        insertBulletInToTheBarrel();
+
+
         assignActionReloadButton();
 
     }
@@ -37,9 +47,10 @@ public class MainActivity extends AppCompatActivity {
         reloadButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                reEnableButtons();
+
                 resetBackground();
-                insertBulletInToTheBarrel();
+                barrel.reset();
+
             }
 
             private void resetBackground() {
@@ -47,48 +58,17 @@ public class MainActivity extends AppCompatActivity {
                 textBang.setVisibility(View.INVISIBLE);
             }
 
-            private void reEnableButtons() {
-                for(Button b : buttons){
-                    b.setEnabled(true);
-                }
-            }
+
         });
     }
 
-    private void createButtons() {
-        buttons=new Button[NUM_BULLETS];
-        LinearLayout barrel= findViewById(R.id.layoutBarrel);
 
-        for(int i=0;i<buttons.length;i++){
-
-            buttons[i]= new Button(this/*getAplicationContext es lo mismo*/, null, android.R.attr.buttonStyleSmall);
-            buttons[i].setText(""+(i+1));
-            barrel.addView(buttons[i]);
-            buttons[i].setTag(i);
-            buttons[i].setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-
-                    if(gameOver) return;
-
-                    v.setEnabled(false);
-                    if(v==bulletBotton){
-                        bang();
-                    }
-                }
-            });
-        }
-    }
 
     private void bang() {
         bangLayout.setBackgroundColor(getResources().getColor(R.color.colorBang));
         textBang.setVisibility(View.VISIBLE);
-        gameOver=true;
+
     }
 
-    private void insertBulletInToTheBarrel() {
-        int bulletIndex=(int)(Math.random()*NUM_BULLETS);//entre 0 y 5
-        bulletBotton = buttons[bulletIndex];
-        gameOver=false;
-    }
+
 }
